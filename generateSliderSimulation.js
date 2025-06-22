@@ -4,15 +4,17 @@ import express from "express";
 import cors from "cors";
 import OpenAI from "openai";
 
+// ✅ Create Express app
 const app = express();
 app.use(express.json());
 app.use(cors());
 
-// ✅ Initialize OpenAI with API key from environment variables
+// ✅ Initialize OpenAI client using your environment variable
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// ✅ Simulation route
 app.post("/generate-slider", async (req, res) => {
   const { title, mission, guiding_questions, tone, intent } = req.body;
 
@@ -82,7 +84,7 @@ Return a valid JSON object only. Do not include explanations or Markdown formatt
     });
 
     const raw = response.choices[0].message.content;
-    const simulation = JSON.parse(raw); // Make sure GPT returns a valid JSON
+    const simulation = JSON.parse(raw); // Ensure the response is valid JSON
 
     res.json(simulation);
   } catch (error) {
@@ -91,9 +93,8 @@ Return a valid JSON object only. Do not include explanations or Markdown formatt
   }
 });
 
-// ✅ Bind to dynamic port for Render or fallback to 3000 for local use
+// ✅ IMPORTANT: Bind to PORT and 0.0.0.0 for Render
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(` 🟢 Slider simulation backend running on port ${PORT}`);
+  console.log(`🟢 Slider simulation backend running on port ${PORT}`);
 });
-
