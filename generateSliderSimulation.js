@@ -7,14 +7,13 @@ app.use(express.json());
 app.use(cors());
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY, // Set this on Render later
+  apiKey: process.env.OPENAI_API_KEY, // Set this on Render as env var
 });
 const openai = new OpenAIApi(configuration);
 
 app.post("/generate-slider", async (req, res) => {
   const { title, mission, guiding_questions, tone, intent } = req.body;
 
-  // 🧠 This is the GPT prompt text from your Canvas
   const basePrompt = `
 You are an expert simulation architect creating interactive policy simulators for The Ark platform. Based on the following topic and user inputs, generate a complete 7-layer slider simulation configuration. The goal is to help users explore complex policy trade-offs visually and dynamically through presets, adjustable sliders, impact dashboards, risks, and strategic analysis.
 
@@ -68,8 +67,7 @@ Please output the result as a JSON object with the following exact fields:
 - Do not reuse templates or placeholders.
 - All sections must be rich, specific, and interlinked.
 - Return a valid JSON object only. No extra text or Markdown.
-`;
-
+  `;
 
   const filledPrompt = basePrompt
     .replace("{{title}}", title)
@@ -86,7 +84,7 @@ Please output the result as a JSON object with the following exact fields:
     });
 
     const raw = response.data.choices[0].message.content;
-    const simulation = JSON.parse(raw); // assumes GPT responds with valid JSON
+    const simulation = JSON.parse(raw); // assumes valid JSON
 
     res.json(simulation);
   } catch (err) {
@@ -95,6 +93,8 @@ Please output the result as a JSON object with the following exact fields:
   }
 });
 
-app.listen(3000, () => {
-  console.log("Slider simulation backend is running on port 3000");
+// 🟢 This line is required for Render to detect the web service
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Slider simulation backend is running on port ${PORT}`);
 });
