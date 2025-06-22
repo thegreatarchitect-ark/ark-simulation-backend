@@ -95,6 +95,8 @@ Return a valid JSON object only. Do not include explanations or Markdown formatt
 
 // ✅ IMPORTANT: Bind to PORT and 0.0.0.0 for Render
 const PORT = process.env.PORT || 3000;
+console.log("✅ Server is starting...");
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🟢 Slider simulation backend running on port ${PORT}`);
 });
